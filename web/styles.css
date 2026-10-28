@@ -1,4 +1,4 @@
-:root { --font-hand:"LXGW WenKai Screen","LXGW WenKai","霞鹜文楷屏幕版","霞鹜文楷","KaiTi","STKaiti","Segoe Print",serif; --font-system:"Segoe UI Variable","Microsoft YaHei UI","Segoe UI",sans-serif; font-family:var(--font-hand); color:#2d3d48; font-size:14px; --ink:#2d3d48; --muted:#85929a; --hair:rgba(88,106,114,.16); --paper:#fffdf6; --blue:#63879a; --green:#cfe4d7; --gold:#f5e8c6; }
+:root { --font-hand:"LXGW WenKai Screen","LXGW WenKai","霞鹜文楷屏幕版","霞鹜文楷","KaiTi","STKaiti","Segoe Print",serif; --font-system:"Microsoft YaHei UI","Microsoft YaHei","Segoe UI Variable","Segoe UI",sans-serif; font-family:var(--font-hand); color:#2d3d48; font-size:14px; --ink:#2d3d48; --muted:#85929a; --hair:rgba(88,106,114,.16); --paper:#fffdf6; --blue:#63879a; --green:#cfe4d7; --gold:#f5e8c6; }
 * { box-sizing:border-box; }
 html,body { height:100%; width:100%; margin:0; }
 body { background:transparent; overflow:hidden; }
@@ -6,7 +6,7 @@ button,input,textarea { font:inherit; color:inherit; }
 button { cursor:pointer; border:0; background:none; }
 button:focus-visible,input:focus-visible,textarea:focus-visible { outline:2px solid #7cabbf; outline-offset:2px; }
 .hidden { display:none !important; }
-.muted { color:var(--muted); font-size:11px; }
+.muted { color:var(--muted); font-size:12px; }
 .main-body { padding:8px; }
 .panel { width:100%; height:100%; overflow:hidden; display:flex; flex-direction:column; position:relative; background:#faf8f2; border-radius:20px 21px 18px 22px; border:1px solid rgba(255,255,255,.88); box-shadow:0 16px 50px rgba(40,57,71,.17),inset 0 0 0 1px rgba(105,122,131,.05); }
 /* No backdrop-filter on Windows transparent WebView2: the desktop must not shine through text. */
@@ -15,9 +15,9 @@ button:focus-visible,input:focus-visible,textarea:focus-visible { outline:2px so
 .brand { display:flex; align-items:center; gap:11px; pointer-events:none; }
 .logo { background:#f3e4ba; width:35px;height:35px; display:grid;place-items:center;font-size:24px;border-radius:11px 12px 9px 12px;transform:rotate(-7deg);box-shadow:inset 0 0 0 1px rgba(125,116,96,.12);color:#7b7b57; }
 .brand-text { font-size:18px; letter-spacing:1px; font-weight:710; }
-.brand-sub { font-size:10px; letter-spacing:0; color:#96a1a2; font-weight:400; margin-left:5px; }
+.brand-sub { font-size:11px; letter-spacing:0; color:#96a1a2; font-weight:400; margin-left:5px; }
 .window-actions { display:flex; gap:7px;align-items:center; }
-.kbd,kbd { font:10px "Cascadia Code","Consolas",monospace;color:#8b969b;background:rgba(199,213,217,.27);border:1px solid rgba(106,126,137,.08);padding:5px 7px;border-radius:6px;white-space:nowrap; }
+.kbd,kbd { font:11px "Cascadia Code","Consolas",monospace;color:#8b969b;background:rgba(199,213,217,.27);border:1px solid rgba(106,126,137,.08);padding:5px 7px;border-radius:6px;white-space:nowrap; }
 .icon-btn { width:28px;height:28px;display:grid;place-items:center;color:#71828b;font-size:20px;border-radius:9px; }
 .icon-btn:hover { background:#eee9e0;color:#293b4b; }
 .tabs { display:flex;align-items:center; padding:0 20px 11px; gap:9px; border-bottom:1px solid var(--hair); }
@@ -59,15 +59,15 @@ button:focus-visible,input:focus-visible,textarea:focus-visible { outline:2px so
 .todo-add span { font-size:21px;color:#74939b; }
 .todo-add input { flex:1;min-width:0;border:0;outline:0;background:transparent;font-size:13px; }
 .todo-add input::placeholder { color:#aab2b3; }
-.tipline { display:flex;gap:7px;align-items:center;color:#98a3a5;font-size:11px;line-height:1.8;padding:0 3px; }
+.tipline { display:flex;gap:7px;align-items:center;color:#98a3a5;font-size:12px;line-height:1.8;padding:0 3px; }
 .tipline span { color:#ad9b78; }
 .tipline kbd { padding:2px 4px; }
 .shortcut-card { display:flex;align-items:center;gap:12px;border:1px dashed #cbd8da;border-radius:12px;background:rgba(240,246,246,.65);padding:10px 12px; }
 .shortcut-icon { width:30px;height:30px;display:grid;place-items:center;color:#8d9fb3;background:#e5ecf2;border-radius:8px;font-size:17px; }
 .shortcut-card span:nth-child(2) { flex:1;min-width:0;display:flex;flex-direction:column;gap:3px; }
 .shortcut-card strong { font-size:12px;color:#526c7a;font-weight:600; }
-.shortcut-card small { font-size:10px;color:#97a8ac;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
-.shortcut-card kbd { font-size:10px; }
+.shortcut-card small { font-size:11px;color:#97a8ac;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
+.shortcut-card kbd { font-size:11px; }
 .history-view { padding:15px 18px 0;display:flex;flex-direction:column;min-height:0; }
 .search-row { display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.8);border-radius:11px;border:1px solid #e2e7e4;padding:0 12px;height:42px; }
 .search-symbol { font-size:24px;color:#8d9da0; }
@@ -75,15 +75,15 @@ button:focus-visible,input:focus-visible,textarea:focus-visible { outline:2px so
 .search-row input::placeholder { color:#a8b1b1; }
 .filter-line { margin-top:12px; }
 .chip-group { display:flex;gap:5px;flex-wrap:wrap; }
-.chip { border:1px solid transparent;border-radius:8px;font-size:11px;color:#82959b;padding:7px 9px; }
+.chip { border:1px solid transparent;border-radius:8px;font-size:12px;color:#82959b;padding:7px 9px; }
 .chip.selected { background:#dce9eb;color:#416376;font-weight:620; }
 .chip:hover { border-color:#cfdbdb; }
 .chip.mini { padding:6px 9px; }
-.custom-dates { display:flex;align-items:center;gap:7px;margin-top:8px;font-size:10px;color:#92a2a5; }
-.custom-dates input { background:#fff;max-width:150px;min-width:0;border-radius:7px;border:1px solid #e1e7e6;font-size:11px;padding:5px; }
+.custom-dates { display:flex;align-items:center;gap:7px;margin-top:8px;font-size:11px;color:#92a2a5; }
+.custom-dates input { background:#fff;max-width:150px;min-width:0;border-radius:7px;border:1px solid #e1e7e6;font-size:12px;padding:5px; }
 .filter-under { display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--hair);margin-top:5px;padding-bottom:7px; }
 .history-list { flex:1;min-height:0;overflow:auto;padding:1px 0 12px; }
-.day-title { font-size:11px;color:#95a1a1;margin:17px 3px 8px;font-weight:650; }
+.day-title { font-size:12px;color:#95a1a1;margin:17px 3px 8px;font-weight:650; }
 .record { background:rgba(255,255,255,.56);border:1px solid #e9e9e1;border-radius:11px;display:flex;align-items:center;gap:11px;padding:10px 10px;margin-bottom:8px;cursor:pointer;min-width:0; }
 .record:hover { background:#fffdfa;border-color:#d2dedc; }
 .thumb { width:54px;height:50px;flex:0 0 54px;display:grid;place-items:center;border-radius:8px;background:#e7eef0;overflow:hidden;color:#77909b;font-size:25px; }
@@ -91,15 +91,15 @@ button:focus-visible,input:focus-visible,textarea:focus-visible { outline:2px so
 .thumb img { width:100%;height:100%;object-fit:cover; }
 .record-copy { flex:1;min-width:0; }
 .record-title { white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:13px;color:#39505c;line-height:1.45; }
-.record-sub { color:#96a0a2;font-size:10px;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
+.record-sub { color:#96a0a2;font-size:11px;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
 .record-actions { display:flex;gap:2px;align-items:center; }
 .record-actions button { border-radius:7px;padding:7px;color:#81929a;font-size:15px; }
 .record-actions button:hover { background:#e2edee;color:#315b6c; }
 .record-actions button.pinned { color:#477f88;background:#e0eff0; }
 .empty { padding:50px 8px;text-align:center;color:#99a8ad;line-height:1.9;font-size:12px; }
 .empty .empty-symbol { font-size:36px;color:#a9c3c3;display:block;margin-bottom:12px; }
-.history-footer { display:flex;justify-content:space-between;padding:10px 2px 14px;border-top:1px solid var(--hair);font-size:10px;color:#a1abab; }
-.history-footer button { padding:0;color:#78919d;font-size:11px; }
+.history-footer { display:flex;justify-content:space-between;padding:10px 2px 14px;border-top:1px solid var(--hair);font-size:11px;color:#a1abab; }
+.history-footer button { padding:0;color:#78919d;font-size:12px; }
 .toast { position:absolute;z-index:100;left:50%;bottom:30px;transform:translateX(-50%);max-width:90%;min-width:135px;border-radius:13px;background:rgba(44,66,75,.93);color:#f8f6ef;padding:12px 16px;text-align:center;font-size:12px;box-shadow:0 9px 30px rgba(30,45,56,.17);line-height:1.55;pointer-events:auto; }
 .toast button { text-decoration:underline;color:#fff;padding-left:6px; }
 .confetti { position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);color:#d7b76a;font-size:25px;pointer-events:none;animation:cheer .75s ease-out both; }
@@ -168,7 +168,7 @@ body,button,input,textarea { font-family:inherit; }
 :root[data-font-mode="standard"] #noteText { font-size:14px; }
 
 /* =========== v0.4.4 : resizable main window and preferences =========== */
-.main-body { padding:0; background:#faf8f2; }
+.main-body { padding:0; background:transparent; }
 .main-body .panel { border-radius:21px; box-shadow:none; }
 .resize-grip { position:absolute;right:0;bottom:0;width:30px;height:30px;z-index:40;cursor:nwse-resize;display:flex;align-items:flex-end;justify-content:flex-end;padding:0 7px 7px 0;user-select:none;touch-action:none; }
 .resize-grip span {width:12px;height:12px;border-right:2px solid #9baeb5;border-bottom:2px solid #9baeb5; border-radius:1px; opacity:.75; }
@@ -189,7 +189,7 @@ body,button,input,textarea { font-family:inherit; }
 .settings-scroll {overflow:auto;flex:1;min-height:0;padding:9px 21px 15px;}
 .settings-section {padding:13px 0 20px;border-bottom:1px dashed #dadbd3;}
 .settings-section h2 {font-size:15px;margin:0 0 8px;}
-.settings-section p {font-size:11px;color:var(--muted);line-height:1.7;margin:0 0 15px;}
+.settings-section p {font-size:12px;color:var(--muted);line-height:1.7;margin:0 0 15px;}
 .setting-row {display:flex;align-items:center;justify-content:space-between;gap:10px;margin:10px 0;}
 .setting-row label {font-size:12px;color:#4e626b;}
 .key-capture {min-width:150px;border:1px solid #d6e1df;background:#fffefa;text-align:center;font:11px var(--font-system);padding:10px 12px;border-radius:10px;color:#395e6a;white-space:nowrap;}
@@ -220,7 +220,7 @@ body,button,input,textarea { font-family:inherit; }
 
 /* Warm, low-contrast dark theme: no bright accent glow and no backdrop-filter. */
 :root[data-theme="dark"] { color-scheme:dark; --ink:#dce8e9;--muted:#8fa1a9;--paper:#2c363d;--blue:#8eb1c1;--green:#32473e;--gold:#594d36;--hair:rgba(170,194,199,.14);color:#dce8e9; }
-:root[data-theme="dark"] .main-body {background:#202a32;}
+:root[data-theme="dark"] .main-body {background:transparent;}
 :root[data-theme="dark"] .panel,
 :root[data-theme="dark"] .settings-panel {background:#202a32;border-color:#35434a;}
 :root[data-theme="dark"] .sheet {background:#29343b;border-color:#3b4a50;box-shadow:0 7px 26px rgba(3,9,12,.12);}
@@ -305,17 +305,10 @@ body,button,input,textarea { font-family:inherit; }
 :root[data-theme="dark"] .float-menu button {color:#d2e3e7;}
 :root[data-theme="dark"] .float-menu button:hover {background:#3b525e;color:#fff;}
 
-/* Opaque settings window avoids Win32 layered-window bleed-through. */
-.settings-body {background:#faf8f2;padding:0;}
-:root[data-theme="dark"] .settings-body {background:#202a32;}
-.settings-panel {border-radius:21px;box-shadow:none;}
-
-/* v0.4.5: Native Win32 SetWindowRgn clips BOTH the WebView and OS window.
-   Keep every pixel opaque to avoid the transparent WebView2 bleed-through bug;
-   the native rounded window region physically removes the four corner pixels.
-   Match the CSS curve to the region radius (21 logical px). */
-.main-body,.settings-body { background:var(--tietie-main-bg,#faf8f2); }
+/* v0.4.5: 透明窗口 + CSS 圆角。body 背景透明，面板自绘圆角，
+   由 WebView2 按像素混合，四角平滑抗锯齿（替代已移除的 SetWindowRgn 裁剪）。 */
+.main-body,.settings-body { background:transparent; }
 :root[data-theme="dark"] .main-body,
-:root[data-theme="dark"] .settings-body { --tietie-main-bg:#202a32; }
+:root[data-theme="dark"] .settings-body { background:transparent; }
 .main-body .panel,.settings-panel { border-radius:21px; }
-/* Corner clipping and resizing do not depend on backdrop-filter or opacity. */
+/* 圆角与缩放不依赖 backdrop-filter 或透明度。 */
