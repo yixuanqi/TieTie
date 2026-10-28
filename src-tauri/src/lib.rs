@@ -589,6 +589,22 @@ fn hide_panel(app: AppHandle) -> Result<(), String> {
     app.get_webview_window("main").ok_or("主窗口不存在")?.hide().map_err(|e| e.to_string())
 }
 
+// v0.4.6: 彩虹屁词库。默认词库随二进制内置，首次调用时种子化到数据目录的
+// praises.json，用户可直接编辑该文件增删词条；读取失败时回退内置默认。
+const DEFAULT_PRAISES: &str = include_str!("../praises_default.json");
+
+#[tauri::command]
+fn load_praises(store: State<'_, DataStore>) -> Vec<String> {
+    let path = store.root.join("praises.json");
+    if !path.exists() {
+        let _ = std::fs::write(&path, DEFAULT_PRAISES);
+    }
+    match std::fs::read_to_string(&path) {
+        Ok(text) => serde_json::from_str(&text).unwrap_or_else(|_| serde_json::from_str(DEFAULT_PRAISES).unwrap()),
+        Err(_) => serde_json::from_str(DEFAULT_PRAISES).unwrap(),
+    }
+}
+
 fn toggle_panel(app: &AppHandle) {
     if let Some(window) = app.get_webview_window("main") {
         if window.is_visible().unwrap_or(false) {
@@ -705,7 +721,7 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             list_notes, save_text, save_todo, capture_clipboard, paste_image_data, get_image_data, get_thumbnail_data,
             delete_note, restore_note, open_float, hide_float, update_float,
-            get_hotkeys, get_data_directory, hide_panel, show_note_in_panel,
+            get_hotkeys, get_data_directory, hide_panel, show_note_in_panel, load_praises,
             get_preferences, save_preferences, save_panel_size, open_settings, hide_settings
         ])
         .run(tauri::generate_context!())
