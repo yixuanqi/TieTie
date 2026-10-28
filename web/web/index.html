@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>贴贴 · 轻轻收好</title>
+<link rel="stylesheet" href="styles.css">
+<script defer src="app.js"></script>
+</head>
+<body class="main-body">
+  <main id="panel" class="panel surface" aria-label="贴贴收集面板">
+    <header id="dragRegion" class="topbar drag-region">
+      <div class="brand" aria-label="贴贴"><div class="logo">✦</div><div class="brand-text">贴贴 <span class="brand-sub">随手存下，随时找回</span></div></div>
+      <div class="window-actions">
+        <span class="kbd" title="再次按快捷键可隐藏">Ctrl Alt N</span>
+        <button id="hideBtn" class="icon-btn" title="隐藏（Esc 或双击标题栏）" aria-label="隐藏">×</button>
+      </div>
+    </header>
+    <nav class="tabs" aria-label="模式">
+      <button id="captureTab" class="tab selected" type="button">✎ <span>随手记</span></button>
+      <button id="historyTab" class="tab" type="button">◷ <span>找回来</span></button>
+      <div class="tabs-spacer"></div>
+      <button id="newNote" class="tiny-action" type="button" title="新建便签">＋ 新建</button>
+    </nav>
+
+    <section id="captureView" class="view capture-view">
+      <div class="sheet paper-text">
+        <div class="sheet-heading">
+          <span id="sheetLabel">一张新的小纸片</span>
+          <span id="status" class="muted">自动保存</span>
+        </div>
+        <div id="textComposer" class="composer">
+          <textarea id="noteText" aria-label="便签文字" spellcheck="false" placeholder="随手写点什么…&#10;&#10;也可以 Ctrl+V 粘贴任意软件复制的文字或图片。"></textarea>
+          <div id="imageWrap" class="image-preview hidden">
+            <img id="previewImage" alt="收藏的图片">
+            <span>✦ 图片已保存在本地，可在下面补充备注</span>
+          </div>
+        </div>
+        <div id="todoComposer" class="todo-composer hidden">
+          <div class="todo-heading">✦ 事情一件一件来</div>
+          <div id="todoItems" class="todo-items"></div>
+          <div class="todo-add"><span>＋</span><input id="todoInput" type="text" maxlength="2000" placeholder="写下一件小事，按 Enter" aria-label="新待办"></div>
+        </div>
+        <div class="sheet-bottom">
+          <div class="compose-actions">
+            <button id="modeText" class="tool active" title="文字 / 截图" aria-label="文字与图片">✎</button>
+            <button id="modeTodo" class="tool" title="Todo 待办" aria-label="待办">☑</button>
+            <button id="pasteBtn" class="tool" title="从系统剪贴板粘贴文字或图片" aria-label="粘贴剪贴板">▣</button>
+          </div>
+          <button id="finishBtn" class="finish-btn">收好这张 <span>↗</span></button>
+        </div>
+      </div>
+      <div class="tipline"><span>✧</span> 不用命名，自动存到本地。<kbd>Esc</kbd> 收起，双击顶部空白处隐藏。</div>
+      <div class="shortcut-card"><span class="shortcut-icon">⌘</span><span><strong>快速收藏剪贴板</strong><small>任何软件复制的文字 / 图片，直接保存</small></span><kbd>Ctrl Alt V</kbd></div>
+    </section>
+
+    <section id="historyView" class="view history-view hidden">
+      <div class="search-row"><span class="search-symbol">⌕</span><input type="search" id="searchInput" placeholder="搜文字、备注和待办…" aria-label="关键字搜索" autocomplete="off"></div>
+      <div class="filter-line">
+        <div class="chip-group" id="dateChips">
+          <button class="chip selected" data-range="all">全部时间</button>
+          <button class="chip" data-range="today">今天</button>
+          <button class="chip" data-range="week">近 7 天</button>
+          <button class="chip" data-range="month">本月</button>
+          <button class="chip" data-range="custom">日期…</button>
+        </div>
+        <div id="customDates" class="custom-dates hidden"><input type="date" id="startDate" aria-label="开始日期"><span>到</span><input type="date" id="endDate" aria-label="结束日期"></div>
+        <div class="filter-under"><div id="typeChips" class="chip-group"><button class="chip mini selected" data-type="all">所有</button><button class="chip mini" data-type="image">图片</button><button class="chip mini" data-type="text">文字</button><button class="chip mini" data-type="todo">Todo</button></div><span id="resultCount" class="muted">0 条</span></div>
+      </div>
+      <div id="historyList" class="history-list" aria-live="polite"></div>
+      <div class="history-footer"><span>✦ 只在你的电脑里</span><button id="dataPathBtn" title="显示本地数据目录">数据位置 ↗</button></div>
+    </section>
+
+    <div id="toast" class="toast hidden" role="status"></div>
+    <div id="confetti" class="confetti hidden" aria-hidden="true">✧ ✦ ✨ ✳</div>
+  </main>
+</body>
+</html>
