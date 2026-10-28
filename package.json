@@ -1,0 +1,14 @@
+{
+  "name": "tietie-windows",
+  "version": "0.4.5",
+  "private": true,
+  "description": "贴贴 - Windows 原生桌面剪贴收藏与浮贴",
+  "scripts": {
+    "dev": "tauri dev",
+    "build": "tauri build",
+    "check:js": "node --check web/app.js && node --check web/float.js"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.0.0"
+  }
+}
