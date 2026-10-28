@@ -9,9 +9,20 @@
   const fmtTime = (n) => new Date(n).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', hour12:false });
   const fmtDate = (n) => new Date(n).toLocaleDateString('zh-CN', {year:'numeric',month:'2-digit',day:'2-digit'});
   const titleOf = (n) => n.kind === 'todo' ? (n.tasks[0]?.text || '待办清单') : (n.text?.split('\n').find(x=>x.trim())?.trim().slice(0,40) || (n.kind === 'image' ? '未命名图片' : '一条文字便签'));
-  const normal = ['待办清单正在连夜申请工伤。', '任务已被你无情消灭，建议剩下的待办主动投降。', '你完成的不是任务，是对拖延症的一次精准打击。', '老板看了都想给你颁发一头生产队的驴。'];
-  const epic = ['NASA 刚打来电话，想借用你的执行力去推火箭。', '联合国紧急开会，讨论今天要不要设成你的纪念日。', '这效率，生产队的驴看了都沉默。', '你负责创造奇迹，待办清单负责瑟瑟发抖。'];
-  const rare = ['警告：生产力突破本软件理论上限，开发者请求停火。', '生产力 +999，工资 +0。建议与老板友好协商。', '检测到超越 99.99% 的碳基生物。剩下的 0.01% 是蚂蚁。'];
+  // v0.4.6: 彩虹屁词库。启动时从数据目录 praises.json 加载（Rust 端首启种子化），
+  // 失败回退内置默认；洗牌袋抽词保证全部轮完一遍才出现重复。
+  const FALLBACK_PRAISES = [
+    '待办清单正在连夜申请工伤。', '任务已被你无情消灭，建议剩下的待办主动投降。',
+    '你完成的不是任务，是对拖延症的一次精准打击。', '老板看了都想给你颁发一头生产队的驴。',
+    'NASA 刚打来电话，想借用你的执行力去推火箭。', '联合国紧急开会，讨论今天要不要设成你的纪念日。',
+    '这效率，生产队的驴看了都沉默。', '你负责创造奇迹，待办清单负责瑟瑟发抖。',
+    '警告：生产力突破本软件理论上限，开发者请求停火。', '生产力 +999，工资 +0。建议与老板友好协商。',
+    '检测到超越 99.99% 的碳基生物。剩下的 0.01% 是蚂蚁。'
+  ];
+  let praises = FALLBACK_PRAISES;
+  let praiseBag = [];
+  const shuffle = (arr) => { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } return arr; };
+  const nextPraise = () => { if (!praiseBag.length) praiseBag = shuffle([...praises]); return praiseBag.pop(); };
 
   let notes = [];
   let currentView = 'capture';
@@ -246,8 +257,7 @@
   }
   function celebrate() {
     try { if (localStorage.getItem('tietie-celebrate') === 'off') return; } catch (_) {}
-    const p=Math.random(), collection=p<.02?rare:p<.25?epic:normal;
-    toast('✦ '+collection[Math.floor(Math.random()*collection.length)]);
+    toast('✦ ' + nextPraise());
   }
   function addTask() {
     const value=$('#todoInput').value.trim();if (!value)return;
@@ -470,6 +480,7 @@
   api.event.listen('capture-feedback',event=>{toast(event.payload);load().catch(fail);});
   api.event.listen('open-note',async event=>{try{await load();const n=notes.find(n=>n.id===event.payload);if(n)await openNote(n);}catch(e){fail(e);}});
   load().then(async()=>{
+    invoke('load_praises').then(list=>{ if (Array.isArray(list) && list.length) { praises = list; praiseBag = []; } }).catch(()=>{});
     const status=await invoke('get_hotkeys');
     if(!status.panel||!status.capture)toast('部分快捷键被其他应用占用。可用托盘右键菜单操作。');
     $('#noteText').focus();
