@@ -248,8 +248,6 @@
     try { if (localStorage.getItem('tietie-celebrate') === 'off') return; } catch (_) {}
     const p=Math.random(), collection=p<.02?rare:p<.25?epic:normal;
     toast('✦ '+collection[Math.floor(Math.random()*collection.length)]);
-    const fx=$('#confetti');fx.classList.remove('hidden');void fx.offsetWidth;fx.style.animation='none';void fx.offsetWidth;fx.style.animation='';
-    setTimeout(()=>fx.classList.add('hidden'),850);
   }
   function addTask() {
     const value=$('#todoInput').value.trim();if (!value)return;

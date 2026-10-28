@@ -50,8 +50,14 @@ button:focus-visible,input:focus-visible,textarea:focus-visible { outline:2px so
 .todo-heading { color:#344f5d;font-weight:650;padding:7px 0 11px; }
 .todo-items { flex:1;overflow:auto; }
 .todo-row { display:flex;gap:9px;align-items:flex-start;padding:8px 2px;line-height:1.55; }
-.todo-row input { width:17px;height:17px; accent-color:#6d9ab7;margin:2px 0 0;flex-shrink:0;cursor:pointer; }
-.todo-row .done { color:#a3aeac;text-decoration:line-through; }
+/* v0.4.6: 自绘勾选框替代原生 checkbox，勾选有轻量缩放动效 */
+.todo-row input[type="checkbox"] { appearance:none;-webkit-appearance:none;width:17px;height:17px;margin:2px 0 0;flex:0 0 17px;border:1.5px solid #b3c2c6;border-radius:5px;background:#fff;cursor:pointer;position:relative;transition:background .15s ease,border-color .15s ease; }
+.todo-row input[type="checkbox"]:hover { border-color:#7ba3ae; }
+.todo-row input[type="checkbox"]:checked { background:#5f8ba3;border-color:#5f8ba3;animation:checkpop .25s ease; }
+.todo-row input[type="checkbox"]:checked::after { content:'';position:absolute;left:4.5px;top:1px;width:4px;height:8px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(42deg); }
+@keyframes checkpop { 0%{transform:scale(.8)} 55%{transform:scale(1.12)} 100%{transform:scale(1)} }
+.todo-row .done { color:#a3aeac;text-decoration:line-through;animation:taskfade .3s ease; }
+@keyframes taskfade { from{opacity:.2} to{opacity:1} }
 .todo-row span { flex:1;overflow-wrap:anywhere; }
 .todo-row .remove-task { font-size:15px;color:#b4b5b1;opacity:0; }
 .todo-row:hover .remove-task { opacity:1; }
@@ -102,14 +108,13 @@ button:focus-visible,input:focus-visible,textarea:focus-visible { outline:2px so
 .history-footer button { padding:0;color:#78919d;font-size:12px; }
 .toast { position:absolute;z-index:100;left:50%;bottom:30px;transform:translateX(-50%);max-width:90%;min-width:135px;border-radius:13px;background:rgba(44,66,75,.93);color:#f8f6ef;padding:12px 16px;text-align:center;font-size:12px;box-shadow:0 9px 30px rgba(30,45,56,.17);line-height:1.55;pointer-events:auto; }
 .toast button { text-decoration:underline;color:#fff;padding-left:6px; }
-.confetti { position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);color:#d7b76a;font-size:25px;pointer-events:none;animation:cheer .75s ease-out both; }
-@keyframes cheer { 0% {opacity:0;transform:translate(-50%,-30%) scale(.4)} 45%{opacity:1;transform:translate(-50%,-80%) scale(1.25)} 100%{opacity:0;transform:translate(-50%,-125%) scale(1)} }
+.confetti { display:none; }
 @media (prefers-reduced-motion:reduce) { *,*:before,*:after {animation:none!important;transition:none!important;} }
 /* Floating note: a separate genuine Tauri native window. */
 .float-body { padding:5px; }
-.float-card { width:100%;height:100%;position:relative;display:flex;flex-direction:column;overflow:hidden; border-radius:13px 13px 16px 12px; background:rgba(255,251,237,var(--note-opacity,.96));border:1px solid rgba(158,153,134,.29);box-shadow:0 8px 30px rgba(39,54,65,.18); }
-.float-card.kind-image { background:rgba(230,238,244,var(--note-opacity,.96)); }
-.float-card.kind-todo { background:rgba(254,246,217,var(--note-opacity,.96)); }
+.float-card { width:100%;height:100%;position:relative;display:flex;flex-direction:column;overflow:hidden; border-radius:13px 13px 16px 12px; background:rgba(255,251,237,var(--note-opacity,1));border:1px solid rgba(158,153,134,.29);box-shadow:0 8px 30px rgba(39,54,65,.18); }
+.float-card.kind-image { background:rgba(230,238,244,var(--note-opacity,1)); }
+.float-card.kind-todo { background:rgba(254,246,217,var(--note-opacity,1)); }
 .float-top { height:41px; flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:5px 12px;cursor:grab;user-select:none;color:#75838c; }
 .float-mark { font-size:11px;font-weight:650;letter-spacing:.4px; }
 .float-controls { display:flex;gap:4px;opacity:0;transition:opacity .14s; }
@@ -123,7 +128,9 @@ button:focus-visible,input:focus-visible,textarea:focus-visible { outline:2px so
 .float-content .caption { color:#73818b;font-size:11px;text-align:center;max-height:50px;overflow:auto; }
 .float-content .text-body { white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.8;font-size:13px; }
 .float-content .float-task { display:flex;gap:9px;align-items:flex-start;line-height:1.6;padding:8px 0;font-size:13px; }
-.float-content .float-task input { width:17px;height:17px;margin-top:2px;flex-shrink:0;accent-color:#6f9aab; }
+.float-content .float-task input { appearance:none;-webkit-appearance:none;width:16px;height:16px;margin-top:2px;flex-shrink:0;border:1.5px solid #b3c2c6;border-radius:5px;background:rgba(255,255,255,.9);cursor:pointer;position:relative;transition:background .15s ease,border-color .15s ease; }
+.float-content .float-task input:checked { background:#5f8ba3;border-color:#5f8ba3;animation:checkpop .25s ease; }
+.float-content .float-task input:checked::after { content:'';position:absolute;left:4px;top:0.5px;width:4px;height:8px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(42deg); }
 .float-content .float-task .done { color:#a4a9a2;text-decoration:line-through; }
 .float-footer { display:flex;align-items:center;justify-content:space-between;padding:7px 13px 10px;color:#abb1ac;font-size:10px;flex-shrink:0;user-select:none; }
 .opacity-pop { z-index:12;position:absolute;right:13px;top:40px;padding:11px;background:#fffefa;border:1px solid #e6e4d8;border-radius:11px;box-shadow:0 8px 22px rgba(40,48,52,.12);display:flex;align-items:center;gap:8px;color:#71828a;font-size:11px; }
@@ -219,91 +226,92 @@ body,button,input,textarea { font-family:inherit; }
 .settings-footer button:disabled {opacity:.55;cursor:default;}
 
 /* Warm, low-contrast dark theme: no bright accent glow and no backdrop-filter. */
-:root[data-theme="dark"] { color-scheme:dark; --ink:#dce8e9;--muted:#8fa1a9;--paper:#2c363d;--blue:#8eb1c1;--green:#32473e;--gold:#594d36;--hair:rgba(170,194,199,.14);color:#dce8e9; }
+/* v0.4.6: 暗色主题参考 VS Code Dark Modern（中性深灰 + 蓝色强调，弃用青绿色调）。 */
+:root[data-theme="dark"] { color-scheme:dark; --ink:#cccccc;--muted:#9d9d9d;--paper:#252526;--blue:#3794ff;--green:#2d4a3a;--gold:#4b4231;--hair:rgba(255,255,255,.10);color:#cccccc; }
 :root[data-theme="dark"] .main-body {background:transparent;}
 :root[data-theme="dark"] .panel,
-:root[data-theme="dark"] .settings-panel {background:#202a32;border-color:#35434a;}
-:root[data-theme="dark"] .sheet {background:#29343b;border-color:#3b4a50;box-shadow:0 7px 26px rgba(3,9,12,.12);}
+:root[data-theme="dark"] .settings-panel {background:#1f1f1f;border-color:#2b2b2b;}
+:root[data-theme="dark"] .sheet {background:#252526;border-color:#333333;box-shadow:0 7px 26px rgba(0,0,0,.35);}
 :root[data-theme="dark"] .brand-text,
 :root[data-theme="dark"] .settings-brand strong,
-:root[data-theme="dark"] .settings-section h2 {color:#ebf1ee;}
+:root[data-theme="dark"] .settings-section h2 {color:#e7e7e7;}
 :root[data-theme="dark"] .logo,
-:root[data-theme="dark"] .settings-star {background:#615439;color:#e9d8a6;}
+:root[data-theme="dark"] .settings-star {background:#3c3c3c;color:#e5c07b;}
 :root[data-theme="dark"] .brand-sub,
-:root[data-theme="dark"] .settings-brand small {color:#9eb0b5;}
-:root[data-theme="dark"] .tab {color:#a6bac2;}
+:root[data-theme="dark"] .settings-brand small {color:#9d9d9d;}
+:root[data-theme="dark"] .tab {color:#9d9d9d;}
 :root[data-theme="dark"] .tab.selected,
 :root[data-theme="dark"] .chip.selected,
-:root[data-theme="dark"] .font-toggle[aria-pressed="true"] {background:#374d56;color:#cde6e9;}
+:root[data-theme="dark"] .font-toggle[aria-pressed="true"] {background:#04395e;color:#ffffff;}
 :root[data-theme="dark"] .tab:hover:not(.selected),
 :root[data-theme="dark"] .tiny-action:hover,
 :root[data-theme="dark"] .icon-btn:hover,
-:root[data-theme="dark"] .settings-close:hover {background:#354650;color:#e1edef;}
+:root[data-theme="dark"] .settings-close:hover {background:#2a2d2e;color:#e7e7e7;}
 :root[data-theme="dark"] .tiny-action,
 :root[data-theme="dark"] .icon-btn,
-:root[data-theme="dark"] .font-toggle {color:#a0b5bc;}
+:root[data-theme="dark"] .font-toggle {color:#a8a8a8;}
 :root[data-theme="dark"] .sheet-heading,
 :root[data-theme="dark"] .sheet-heading #sheetLabel,
 :root[data-theme="dark"] .todo-heading,
 :root[data-theme="dark"] .todo-add span,
-:root[data-theme="dark"] .setting-row label {color:#c4d4d4;}
+:root[data-theme="dark"] .setting-row label {color:#c8c8c8;}
 :root[data-theme="dark"] #noteText,
 :root[data-theme="dark"] #todoInput,
-:root[data-theme="dark"] .search-row input {color:#e1ebea;}
+:root[data-theme="dark"] .search-row input {color:#e7e7e7;}
 :root[data-theme="dark"] #noteText::placeholder,
 :root[data-theme="dark"] #todoInput::placeholder,
-:root[data-theme="dark"] .search-row input::placeholder {color:#879da6;}
-:root[data-theme="dark"] .tool {background:#35424a;color:#b7cbd2;}
-:root[data-theme="dark"] .tool.active {background:#3d5961;color:#d3edef;border-color:#4d6a73;}
-:root[data-theme="dark"] .tool:hover {background:#41545c;}
+:root[data-theme="dark"] .search-row input::placeholder {color:#8b8b8b;}
+:root[data-theme="dark"] .tool {background:#2a2d2e;color:#cccccc;}
+:root[data-theme="dark"] .tool.active {background:#264f78;color:#ffffff;border-color:#0078d4;}
+:root[data-theme="dark"] .tool:hover {background:#313131;}
 :root[data-theme="dark"] .finish-btn,
 :root[data-theme="dark"] .image-empty-actions button,
-:root[data-theme="dark"] .settings-footer button.save-settings {background:#3a5962;color:#dceeed;}
-:root[data-theme="dark"] .tipline {color:#9aadb4;}
+:root[data-theme="dark"] .settings-footer button.save-settings {background:#0078d4;color:#ffffff;}
+:root[data-theme="dark"] .tipline {color:#9d9d9d;}
 :root[data-theme="dark"] .shortcut-card,
-:root[data-theme="dark"] .image-empty {background:#273943;border-color:#455a61;color:#c0d2d5;}
+:root[data-theme="dark"] .image-empty {background:#252526;border-color:#333333;color:#bbbbbb;}
 :root[data-theme="dark"] .shortcut-card strong,
-:root[data-theme="dark"] .image-empty strong {color:#bed8dc;}
-:root[data-theme="dark"] .shortcut-icon {background:#364854;color:#accdd7;}
+:root[data-theme="dark"] .image-empty strong {color:#d7d7d7;}
+:root[data-theme="dark"] .shortcut-icon {background:#313131;color:#6cb6ff;}
 :root[data-theme="dark"] .search-row,
 :root[data-theme="dark"] .record,
-:root[data-theme="dark"] .key-capture {background:#2b3942;border-color:#405158;color:#d8e6e5;}
-:root[data-theme="dark"] .record:hover {background:#344651;border-color:#57727b;}
-:root[data-theme="dark"] .record-title {color:#e0ebea;}
+:root[data-theme="dark"] .key-capture {background:#252526;border-color:#333333;color:#d7d7d7;}
+:root[data-theme="dark"] .record:hover {background:#2a2d2e;border-color:#454545;}
+:root[data-theme="dark"] .record-title {color:#e7e7e7;}
 :root[data-theme="dark"] .record-sub,
 :root[data-theme="dark"] .day-title,
-:root[data-theme="dark"] .history-footer {color:#99aeb6;}
-:root[data-theme="dark"] .thumb {background:#3c5360;color:#c0d8e2;}
-:root[data-theme="dark"] .thumb.todo {background:#5b513d;}
-:root[data-theme="dark"] .thumb.text {background:#45465a;}
-:root[data-theme="dark"] .record-actions button {color:#a6b9bf;}
-:root[data-theme="dark"] .record-actions button:hover,
-:root[data-theme="dark"] .record-actions button.pinned {background:#405963;color:#c9e7ed;}
-:root[data-theme="dark"] .chip {color:#a2b8c1;}
-:root[data-theme="dark"] .chip:hover {border-color:#5d747e;}
-:root[data-theme="dark"] .custom-dates input {background:#32434b;color:#d8e8eb;border-color:#50656e;}
+:root[data-theme="dark"] .history-footer {color:#9d9d9d;}
+:root[data-theme="dark"] .thumb {background:#313131;color:#8fa8b8;}
+:root[data-theme="dark"] .thumb.todo {background:#453a22;}
+:root[data-theme="dark"] .thumb.text {background:#363b52;}
+:root[data-theme="dark"] .record-actions button {color:#a8a8a8;}
+:root[data-theme="dark"] .record-actions button:hover {background:#2a2d2e;color:#ffffff;}
+:root[data-theme="dark"] .record-actions button.pinned {background:#264f78;color:#ffffff;}
+:root[data-theme="dark"] .chip {color:#a8a8a8;}
+:root[data-theme="dark"] .chip:hover {border-color:#4b4b4b;}
+:root[data-theme="dark"] .custom-dates input {background:#313131;color:#d7d7d7;border-color:#3c3c3c;}
 :root[data-theme="dark"] kbd,
-:root[data-theme="dark"] .kbd {background:#34444c;color:#b9cbd2;border-color:#4d6068;}
-:root[data-theme="dark"] .todo-add {border-color:#46565b;}
-:root[data-theme="dark"] .todo-row .done {color:#829398;}
-:root[data-theme="dark"] .image-preview {border-color:#4a5558;}
-:root[data-theme="dark"] .image-preview span {color:#abb7b8;}
-:root[data-theme="dark"] .image-preview img {background:#1e282e;}
-:root[data-theme="dark"] .resize-grip span {border-color:#77949f;}
-:root[data-theme="dark"] .settings-section {border-color:#405057;}
-:root[data-theme="dark"] .settings-footer button {background:#354650;color:#c6d7db;}
-:root[data-theme="dark"] .key-capture.recording {background:#385663;outline-color:#7cabb9;}
-:root[data-theme="dark"] .theme-choice {background:#2c3942;color:#d2e0e0;}
-:root[data-theme="dark"] .theme-choice.selected {border-color:#86b4c3;}
-:root[data-theme="dark"] .float-card {background:rgba(41,52,60,var(--note-opacity,.96));color:#e0ecee;border-color:#52626b;}
+:root[data-theme="dark"] .kbd {background:#313131;color:#c8c8c8;border-color:#3c3c3c;}
+:root[data-theme="dark"] .todo-add {border-color:#3c3c3c;}
+:root[data-theme="dark"] .todo-row .done {color:#8b8b8b;}
+:root[data-theme="dark"] .image-preview {border-color:#3c3c3c;}
+:root[data-theme="dark"] .image-preview span {color:#9d9d9d;}
+:root[data-theme="dark"] .image-preview img {background:#1a1a1a;}
+:root[data-theme="dark"] .resize-grip span {border-color:#5a5a5a;}
+:root[data-theme="dark"] .settings-section {border-color:#333333;}
+:root[data-theme="dark"] .settings-footer button {background:#313131;color:#cccccc;}
+:root[data-theme="dark"] .key-capture.recording {background:#313131;outline-color:#0078d4;}
+:root[data-theme="dark"] .theme-choice {background:#252526;color:#d7d7d7;}
+:root[data-theme="dark"] .theme-choice.selected {border-color:#0078d4;}
+:root[data-theme="dark"] .float-card {background:rgba(31,31,31,var(--note-opacity,1));color:#cccccc;border-color:#2b2b2b;}
 :root[data-theme="dark"] .float-mark,
-:root[data-theme="dark"] .float-content .text-body {color:#dbe8e8;}
+:root[data-theme="dark"] .float-content .text-body {color:#d7d7d7;}
 :root[data-theme="dark"] .float-controls button,
-:root[data-theme="dark"] .float-footer {color:#aec1c6;}
+:root[data-theme="dark"] .float-footer {color:#9d9d9d;}
 :root[data-theme="dark"] .opacity-pop,
-:root[data-theme="dark"] .float-menu {background:#2c3c45;border-color:#4d5e67;color:#d7e6e9;}
-:root[data-theme="dark"] .float-menu button {color:#d2e3e7;}
-:root[data-theme="dark"] .float-menu button:hover {background:#3b525e;color:#fff;}
+:root[data-theme="dark"] .float-menu {background:#252526;border-color:#3c3c3c;color:#d7d7d7;}
+:root[data-theme="dark"] .float-menu button {color:#cccccc;}
+:root[data-theme="dark"] .float-menu button:hover {background:#2a2d2e;color:#ffffff;}
 
 /* v0.4.5: 透明窗口 + CSS 圆角。body 背景透明，面板自绘圆角，
    由 WebView2 按像素混合，四角平滑抗锯齿（替代已移除的 SetWindowRgn 裁剪）。 */
@@ -312,3 +320,13 @@ body,button,input,textarea { font-family:inherit; }
 :root[data-theme="dark"] .settings-body { background:transparent; }
 .main-body .panel,.settings-panel { border-radius:21px; }
 /* 圆角与缩放不依赖 backdrop-filter 或透明度。 */
+
+/* v0.4.6: 主题化滚动条，适配亮/暗主题（设置页、历史列表、待办区等所有滚动区域）。 */
+::-webkit-scrollbar { width:10px;height:10px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:#c8d2d2;border-radius:6px;border:2px solid transparent;background-clip:content-box; }
+::-webkit-scrollbar-thumb:hover { background-color:#a7b8b8; }
+::-webkit-scrollbar-corner { background:transparent; }
+:root[data-theme="dark"] ::-webkit-scrollbar-thumb { background-color:#424242; }
+:root[data-theme="dark"] ::-webkit-scrollbar-thumb:hover { background-color:#5a5a5a; }
+:root[data-theme="dark"] ::-webkit-scrollbar-track { background:transparent; }
