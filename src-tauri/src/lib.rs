@@ -19,68 +19,9 @@ use std::process::Command;
 #[cfg(windows)]
 use std::os::windows::process::CommandExt;
 
-// v0.4.5: native rounded edges for opaque, frameless Windows.
-// A CSS border-radius only clips HTML, not the top-level HWND. Setting WebView2
-// transparency to emulate rounded corners caused the user's earlier background
-// bleed-through. Clip the actual native HWND instead (Win10/Win11 supported).
-// No new crate is needed: this is Win32 GDI / user32.
-#[cfg(windows)]
-#[link(name = "gdi32")]
-unsafe extern "system" {
-    fn CreateRoundRectRgn(left: i32, top: i32, right: i32, bottom: i32, ellipse_width: i32, ellipse_height: i32) -> *mut std::ffi::c_void;
-    fn DeleteObject(object: *mut std::ffi::c_void) -> i32;
-}
-#[cfg(windows)]
-#[link(name = "user32")]
-unsafe extern "system" {
-    fn SetWindowRgn(hwnd: *mut std::ffi::c_void, region: *mut std::ffi::c_void, redraw: i32) -> i32;
-}
-
-#[cfg(windows)]
-fn round_native_window(window: &tauri::WebviewWindow) -> Result<(), String> {
-    if window.label() != "main" && window.label() != "settings" { return Ok(()); }
-    let size = window.outer_size().map_err(|e| format!("获取窗口尺寸失败: {e}"))?;
-    if size.width == 0 || size.height == 0 { return Ok(()); }
-    let dpi = window.scale_factor().map_err(|e| format!("获取缩放倍率失败: {e}"))?;
-    // Native region expects PHYSICAL pixels. A 21px CSS radius becomes 42px
-    // on a 200% scaled screen. Windows APIs use the ellipse DIAMETER.
-    let diameter = (42.0 * dpi).round() as i32;
-    let diameter = diameter.clamp(2, size.width.min(size.height) as i32);
-    // The native API may generate window-position notifications. Remember the
-    // size *before* calling it so reentrant/duplicate events won't reapply the
-    // region and cause extra redraws or a feedback loop during resizing.
-    static LAST_REGION: std::sync::OnceLock<std::sync::Mutex<std::collections::HashMap<String, (u32, u32, i32)>>> = std::sync::OnceLock::new();
-    let registry = LAST_REGION.get_or_init(|| std::sync::Mutex::new(std::collections::HashMap::new()));
-    let desired = (size.width, size.height, diameter);
-    {
-        let mut seen = registry.lock().map_err(|_| "窗口圆角状态锁异常".to_string())?;
-        if seen.get(window.label()) == Some(&desired) { return Ok(()); }
-        seen.insert(window.label().to_string(), desired);
-    }
-    let region = unsafe {
-        CreateRoundRectRgn(0, 0, size.width as i32 + 1, size.height as i32 + 1, diameter, diameter)
-    };
-    if region.is_null() {
-        if let Ok(mut seen) = registry.lock() { seen.remove(window.label()); }
-        return Err("Windows 创建圆角区域失败".into());
-    }
-    let hwnd = match window.hwnd() {
-        Ok(handle) => handle.0 as *mut std::ffi::c_void,
-        Err(e) => {
-            unsafe { DeleteObject(region); }
-            if let Ok(mut seen) = registry.lock() { seen.remove(window.label()); }
-            return Err(format!("获取 Windows 窗口句柄失败: {e}"));
-        }
-    };
-    // On success Windows takes ownership of HRGN; never free it ourselves.
-    let success = unsafe { SetWindowRgn(hwnd, region, 1) };
-    if success == 0 {
-        unsafe { DeleteObject(region); }
-        if let Ok(mut seen) = registry.lock() { seen.remove(window.label()); }
-        return Err("Windows 设置原生圆角失败".into());
-    }
-    Ok(())
-}
+// v0.4.5: 改用透明窗口 + CSS 圆角（WebView2 按像素混合，四角平滑抗锯齿）。
+// 早期的 SetWindowRgn 原生裁剪是 1 位掩码，Win10 下四角有锯齿，已移除。
+// 注意：主面板/设置窗口需 transparent:true（tauri.conf.json 与 show_settings）。
 
 #[derive(Clone, serde::Serialize)]
 #[serde(rename_all="camelCase")]
@@ -615,18 +556,14 @@ fn show_settings(app: &AppHandle) -> Result<(), String> {
         .title("贴贴 · 设置")
         .inner_size(450.0, 530.0)
         .min_inner_size(410.0, 460.0)
-        .center().transparent(false).decorations(false).shadow(false)
+        .center().transparent(true).decorations(false).shadow(false)
         .always_on_top(true).resizable(false).skip_taskbar(true)
         .build().map_err(|e| format!("打开设置失败: {e}"))?;
-    #[cfg(windows)]
-    if let Some(window) = app.get_webview_window("settings") {
-        round_native_window(&window)?;
-    }
     Ok(())
 }
 
 #[tauri::command]
-fn open_settings(app: AppHandle) -> Result<(), String> { show_settings(&app) }
+async fn open_settings(app: AppHandle) -> Result<(), String> { show_settings(&app) }
 
 #[tauri::command]
 fn hide_settings(app: AppHandle) -> Result<(), String> {
@@ -666,6 +603,16 @@ fn toggle_panel(app: &AppHandle) {
 
 pub fn run() {
     tauri::Builder::default()
+        // v0.4.5: 单实例保护。重复启动时不再创建第二个托盘图标，
+        // 而是唤醒已运行实例并显示主面板。必须第一个注册。
+        .plugin(tauri_plugin_single_instance::init(|app, _args, _cwd| {
+            if let Some(window) = app.get_webview_window("main") {
+                let _ = window.show();
+                let _ = window.unminimize();
+                let _ = window.set_focus();
+                let _ = app.emit_to("main", "panel-shown", ());
+            }
+        }))
         .plugin(tauri_plugin_global_shortcut::Builder::new().with_handler(|app, shortcut, event| {
             if event.state() != ShortcutState::Pressed { return; }
             let prefs = match app.state::<PreferencesState>().get() { Ok(p) => p, Err(_) => return };
@@ -694,10 +641,6 @@ pub fn run() {
             if let Some(main) = app.get_webview_window("main") {
                 let _ = main.set_size(LogicalSize::new(saved.panel_width as f64, saved.panel_height as f64));
             }
-            #[cfg(windows)]
-            if let Some(window) = app.get_webview_window("main") {
-                if let Err(e) = round_native_window(&window) { eprintln!("主面板圆角初始化失败: {e}"); }
-            }
 
             let toggle = MenuItem::with_id(app, "toggle", "打开 / 隐藏贴贴", true, None::<&str>)?;
             let capture = MenuItem::with_id(app, "capture", "收藏剪贴板", true, None::<&str>)?;
@@ -719,7 +662,14 @@ pub fn run() {
                             let _ = handle.emit_to("main", "capture-feedback", res.map(|_| "✓ 剪贴板已收藏".to_owned()).unwrap_or_else(|e|e));
                         });
                     },
-                    "settings" => { if let Err(e) = show_settings(handle) { eprintln!("设置打开失败: {e}"); } },
+                    "settings" => {
+                        // 不能在托盘菜单事件（主线程事件循环内）同步创建窗口，
+                        // 否则 build() 阻塞等待事件循环处理 → 死锁。放到后台线程。
+                        let handle = handle.clone();
+                        std::thread::spawn(move || {
+                            if let Err(e) = show_settings(&handle) { eprintln!("设置打开失败: {e}"); }
+                        });
+                    },
                     "quit" => handle.exit(0),
                     _ => {}
                 })
@@ -742,17 +692,6 @@ pub fn run() {
             Ok(())
         })
         .on_window_event(|window, event| {
-            #[cfg(windows)]
-            if let WindowEvent::Resized(_) = event {
-                if matches!(window.label(), "main" | "settings") {
-                    let handle = window.app_handle();
-                    if let Some(wv) = handle.get_webview_window(window.label()) {
-                        if let Err(e) = round_native_window(&wv) {
-                            eprintln!("窗口大小变化后恢复圆角失败: {e}");
-                        }
-                    }
-                }
-            }
             if let WindowEvent::CloseRequested { api, .. } = event {
                 api.prevent_close();
                 let _ = window.hide();
