@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>贴贴 · 设置</title><link rel="stylesheet" href="styles.css"><script defer src="settings.js"></script></head>
+<body class="settings-body"><main class="settings-panel">
+  <header id="settingsDrag" class="settings-header">
+    <div class="settings-brand"><span class="settings-star">✦</span><span><strong>偏好设置</strong><small>把贴贴调整成你喜欢的样子</small></span></div>
+    <button id="closeSettings" type="button" class="settings-close" aria-label="关闭设置">×</button>
+  </header>
+  <div class="settings-scroll">
+    <section class="settings-section"><h2>⌘ 快捷键</h2><p>点击输入框，按下想使用的新组合键；保存后立即生效。</p>
+      <div class="setting-row"><label for="panelHotkey">唤出 / 隐藏面板</label><button id="panelHotkey" class="key-capture" data-target="panel" type="button">Ctrl + Alt + N</button></div>
+      <div class="setting-row"><label for="captureHotkey">快速收藏剪贴板</label><button id="captureHotkey" class="key-capture" data-target="capture" type="button">Ctrl + Alt + V</button></div>
+      <p class="setting-footnote">至少包含 Ctrl 或 Alt，组合键不能与其他软件冲突。按 Esc 取消录制。</p>
+    </section>
+    <section class="settings-section"><h2>☼ 外观主题</h2><p>目前提供温暖的纸白和低对比度深色两种风格。</p>
+      <div class="theme-grid">
+        <button id="themeLight" class="theme-choice" data-theme="light" type="button"><span class="theme-preview theme-preview-light"><i></i><i></i><i></i></span><strong>亮色 · 纸白</strong><small>暖白 · 浅蓝灰</small></button>
+        <button id="themeDark" class="theme-choice" data-theme="dark" type="button"><span class="theme-preview theme-preview-dark"><i></i><i></i><i></i></span><strong>暗色 · 深墨</strong><small>石墨 · 月光蓝</small></button>
+      </div>
+    </section>
+    <div class="settings-hint">✧ 面板大小可在右下角拖拽调节，重新打开也会记住。</div>
+  </div>
+  <footer class="settings-footer"><span id="settingsFeedback" role="status">修改后点击保存</span><button id="cancelSettings" type="button">取消</button><button id="saveSettings" class="save-settings" type="button">保存设置</button></footer>
+</main></body></html>

@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>贴贴 · 桌面浮贴</title>
+<link rel="stylesheet" href="styles.css">
+<script defer src="float.js"></script>
+</head>
+<body class="float-body">
+  <article id="floatCard" class="float-card paper-text">
+    <header id="floatDrag" class="float-top drag-region">
+      <span class="float-mark">✦ 贴贴</span>
+      <span class="float-controls">
+        <button id="topBtn" title="切换置顶">♧</button>
+        <button id="opacityBtn" title="透明度">◐</button>
+        <button id="hideFloat" title="收起浮贴，但不删除">×</button>
+      </span>
+    </header>
+    <div id="floatContent" class="float-content" title="双击收起浮贴"></div>
+    <footer class="float-footer"><span id="floatDate"></span><span>双击收起 ↘</span></footer>
+    <div id="opacityPopover" class="opacity-pop hidden"><label for="opacityRange">透明度</label><input id="opacityRange" type="range" min="60" max="100" step="5"><span id="opacityValue">96%</span></div>
+    <div id="floatMenu" class="float-menu hidden" role="menu">
+      <button id="menuEdit" type="button">✎  回到主面板编辑</button>
+      <button id="menuPin" type="button">♧  取消 / 启用置顶</button>
+      <button id="menuOpacity" type="button">◐  调整透明度</button>
+      <button id="menuHide" type="button">↘  收起浮贴</button>
+    </div>
+    <div id="floatToast" class="float-toast hidden" role="status"></div>
+  </article>
+</body>
+</html>
