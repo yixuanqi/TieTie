@@ -2,7 +2,11 @@ name: Build TieTie for Windows
 on:
   workflow_dispatch:
   push:
-    branches: [ main ]
+    branches: [ main, master ]
+    tags: [ 'v*' ]
+
+permissions:
+  contents: write
 
 jobs:
   windows:
@@ -24,9 +28,34 @@ jobs:
         run: cargo test --manifest-path src-tauri/Cargo.toml
       - name: Build native Windows app
         run: npm run build
-      - name: Upload Windows installer
+      - name: Package portable exe
+        if: startsWith(github.ref, 'refs/tags/')
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Path dist | Out-Null
+          Copy-Item src-tauri/target/release/tietie.exe dist/TieTie.exe
+          Compress-Archive -Path dist/TieTie.exe -DestinationPath TieTie-${{ github.ref_name }}-windows-x64-portable.zip
+      - name: Upload Windows installer (artifact, branch builds)
+        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
         uses: actions/upload-artifact@v4
         with:
           name: TieTie-v0.4-Windows-Installer
           path: src-tauri/target/release/bundle/nsis/*.exe
           if-no-files-found: error
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          name: TieTie ${{ github.ref_name }}
+          body: |
+            贴贴 TieTie Windows 版。
+
+            - `*-setup.exe`：NSIS 安装包，双击安装（推荐）。
+            - `*-portable.zip`：绿色版，解压后直接运行 TieTie.exe（需要系统已装 WebView2 Runtime，Win10/11 通常自带）。
+
+            数据目录：`%APPDATA%\com.tietie.desktop`。升级不会清空已有便签，重要数据请先备份。
+          files: |
+            src-tauri/target/release/bundle/nsis/*.exe
+            TieTie-*-windows-x64-portable.zip
+          draft: false
+          prerelease: false
