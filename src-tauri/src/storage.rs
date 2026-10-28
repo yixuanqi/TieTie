@@ -51,7 +51,7 @@ impl Note {
             id: Uuid::new_v4().to_string(), kind: kind.into(), text: String::new(),
             tasks: Vec::new(), image_name: None, created_at: now, updated_at: now,
             deleted_at: None, visible: false, pinned: false,
-            x: 260, y: 170, w: 350, h: 290, opacity: 0.96, always_on_top: true,
+            x: 260, y: 170, w: 350, h: 290, opacity: 1.0, always_on_top: true,
         }
     }
 }
