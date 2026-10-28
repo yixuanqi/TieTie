@@ -1,6 +1,6 @@
 [package]
 name = "tietie"
-version = "0.4.5"
+version = "0.4.6"
 description = "贴贴 Windows desktop clipboard board"
 authors = ["TieTie contributors"]
 edition = "2021"
